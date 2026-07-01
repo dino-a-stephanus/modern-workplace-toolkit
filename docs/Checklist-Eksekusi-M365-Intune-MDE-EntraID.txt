@@ -1,0 +1,288 @@
+CHECKLIST EKSEKUSI TEKNIS
+Modern Workplace & Cloud Security Setup
+M365 + Intune + MDE + Azure Entra ID — 10 User
+Konsultan: Dino A. Stephanus
+=====================================================================
+
+PERSIAPAN SEBELUM MULAI
+[ ] Terima DP 50% dari klien
+[ ] Konfirmasi domain perusahaan (sudah punya atau perlu beli)
+[ ] Minta akses DNS management domain klien
+[ ] Kumpulkan daftar 10 user: nama lengkap, jabatan, format email
+[ ] Konfirmasi jenis device karyawan (Windows/iOS/Android)
+[ ] Pastikan klien siap sediakan PIC teknis selama proyek
+[ ] Siapkan spreadsheet tracking: daftar user, email, password sementara, status enrollment
+
+=====================================================================
+HARI 1 — TENANT, DOMAIN, USER, LISENSI
+=====================================================================
+
+[ ] SETUP TENANT M365
+    [ ] Daftar M365 tenant baru di: https://signup.microsoft.com
+    [ ] Pilih paket M365 Business Premium
+    [ ] Catat Global Admin username & password di password manager
+    [ ] Login ke M365 admin center: https://admin.microsoft.com
+
+[ ] VERIFIKASI DOMAIN
+    [ ] Tambahkan custom domain di M365 admin center → Settings → Domains
+    [ ] Tambahkan TXT record verifikasi ke DNS domain klien
+    [ ] Tunggu verifikasi selesai (estimasi 15 menit–1 jam)
+    [ ] Set custom domain sebagai domain default
+
+[ ] KONFIGURASI DNS EMAIL (lakukan setelah domain terverifikasi)
+    [ ] Tambahkan MX record (email masuk)
+    [ ] Tambahkan SPF record (anti-spoofing)
+    [ ] Aktifkan DKIM di Exchange admin center, tambahkan CNAME record ke DNS
+    [ ] Tambahkan DMARC record (policy: p=none dulu untuk monitoring)
+    [ ] Test kirim/terima email: https://mxtoolbox.com/emailhealth
+
+[ ] BUAT 10 USER
+    [ ] Buat user satu per satu di M365 admin center → Users → Add a user
+        [ ] User 1: [Nama] | [email] | password sementara: ________
+        [ ] User 2: [Nama] | [email] | password sementara: ________
+        [ ] User 3: [Nama] | [email] | password sementara: ________
+        [ ] User 4: [Nama] | [email] | password sementara: ________
+        [ ] User 5: [Nama] | [email] | password sementara: ________
+        [ ] User 6: [Nama] | [email] | password sementara: ________
+        [ ] User 7: [Nama] | [email] | password sementara: ________
+        [ ] User 8: [Nama] | [email] | password sementara: ________
+        [ ] User 9: [Nama] | [email] | password sementara: ________
+        [ ] User 10: [Nama] | [email] | password sementara: ________
+    [ ] Centang "require password change at next sign-in" untuk semua user
+    [ ] Assign lisensi M365 Business Premium ke semua user
+
+[ ] BUAT DEDICATED ADMIN ACCOUNT
+    [ ] Buat 1 akun admin terpisah (misal: admin@domain.com) — bukan akun sehari-hari
+    [ ] Assign role Global Admin hanya ke akun ini
+    [ ] Cabut Global Admin dari akun daily-use
+
+=====================================================================
+HARI 2 — ENTRA ID, MFA, CONDITIONAL ACCESS
+=====================================================================
+
+[ ] SECURITY GROUPS
+    [ ] Login ke Entra admin center: https://entra.microsoft.com
+    [ ] Buat security group: All-Staff (masukkan semua 10 user)
+    [ ] Buat security group: Management (masukkan user sesuai jabatan)
+    [ ] Buat security group: IT-Admin (untuk scope policy khusus admin)
+
+[ ] AKTIFKAN MFA
+    [ ] Entra admin center → Identity → Users → Per-user MFA
+    [ ] Aktifkan MFA untuk semua 10 user sekaligus
+    [ ] Atau: gunakan Security Defaults jika tidak butuh Conditional Access custom
+        (Entra → Overview → Properties → Manage Security Defaults)
+
+[ ] CONDITIONAL ACCESS POLICY
+    [ ] Buat policy 1: Block Legacy Authentication
+        - Users: All users
+        - Conditions: Client apps → Legacy authentication clients
+        - Grant: Block access
+    [ ] Buat policy 2: Require MFA for All Users
+        - Users: All users (exclude break-glass account)
+        - Cloud apps: All cloud apps
+        - Grant: Require MFA
+    [ ] Buat policy 3: Require Compliant Device
+        - Users: All users
+        - Grant: Require device to be marked as compliant
+        - (Aktifkan setelah Intune enrollment selesai di Hari 3)
+    [ ] Buat break-glass account (emergency access) — exclude dari semua CA policy
+        [ ] Simpan kredensial break-glass di tempat aman (offline)
+
+[ ] ADMIN HARDENING
+    [ ] Pastikan Global Admin hanya digunakan untuk task admin, bukan email/Teams sehari-hari
+    [ ] Aktifkan MFA untuk admin account
+    [ ] Review assigned roles — pastikan tidak ada user dengan role berlebih
+
+=====================================================================
+HARI 3 — MICROSOFT INTUNE (DEVICE MANAGEMENT)
+=====================================================================
+
+[ ] SETUP INTUNE
+    [ ] Login ke Intune admin center: https://intune.microsoft.com
+    [ ] Set MDM Authority ke Microsoft Intune
+    [ ] Aktifkan auto-enrollment di Entra ID → Mobility (MDM and WIP)
+        - MDM user scope: All
+        - MAM user scope: All
+
+[ ] COMPLIANCE POLICY
+    [ ] Buat compliance policy untuk Windows:
+        [ ] Require BitLocker encryption
+        [ ] Require secure boot
+        [ ] Minimum OS version (Windows 10/11 sesuai device klien)
+        [ ] Require password: min 8 karakter, kompleksitas aktif
+        [ ] Maximum minutes of inactivity before password required: 15 menit
+    [ ] Buat compliance policy untuk iOS/Android (jika ada device mobile):
+        [ ] Require device encryption
+        [ ] Minimum OS version
+        [ ] Require PIN
+
+[ ] CONFIGURATION PROFILE
+    [ ] Buat profile Windows Security Baseline
+        (Endpoint security → Security baselines → Windows Security Baseline)
+    [ ] Deploy ke group All-Staff
+
+[ ] ENROLLMENT 10 DEVICE
+    [ ] Windows: Settings → Accounts → Access work or school → Connect
+        (masukkan email & password M365 masing-masing user)
+        [ ] Device 1: ________ ✓/✗
+        [ ] Device 2: ________ ✓/✗
+        [ ] Device 3: ________ ✓/✗
+        [ ] Device 4: ________ ✓/✗
+        [ ] Device 5: ________ ✓/✗
+        [ ] Device 6: ________ ✓/✗
+        [ ] Device 7: ________ ✓/✗
+        [ ] Device 8: ________ ✓/✗
+        [ ] Device 9: ________ ✓/✗
+        [ ] Device 10: ________ ✓/✗
+    [ ] Verifikasi semua device muncul di Intune → Devices → All devices
+    [ ] Pastikan compliance status semua device: Compliant
+
+=====================================================================
+HARI 4 — MICROSOFT DEFENDER FOR ENDPOINT (MDE)
+=====================================================================
+
+[ ] SETUP MDE
+    [ ] Login ke Microsoft Defender portal: https://security.microsoft.com
+    [ ] Settings → Endpoints → Onboarding → pilih metode onboarding
+        (untuk Windows via Intune: gunakan Endpoint security → Endpoint detection and response)
+
+[ ] ONBOARDING DEVICE VIA INTUNE
+    [ ] Intune admin center → Endpoint security → Endpoint detection and response
+    [ ] Buat policy EDR:
+        - Platform: Windows 10 and later
+        - Profile: Endpoint detection and response
+        - Microsoft Defender for Endpoint client configuration package type: Auto from connector
+    [ ] Assign ke group All-Staff
+    [ ] Verifikasi semua 10 device onboard di Defender portal → Assets → Devices
+        [ ] Device 1: ________ ✓/✗
+        [ ] Device 2: ________ ✓/✗
+        [ ] Device 3: ________ ✓/✗
+        [ ] Device 4: ________ ✓/✗
+        [ ] Device 5: ________ ✓/✗
+        [ ] Device 6: ________ ✓/✗
+        [ ] Device 7: ________ ✓/✗
+        [ ] Device 8: ________ ✓/✗
+        [ ] Device 9: ________ ✓/✗
+        [ ] Device 10: ________ ✓/✗
+
+[ ] KONFIGURASI MDE
+    [ ] Setup Attack Surface Reduction (ASR) rules — mode Audit dulu (bukan Block)
+        (Intune → Endpoint security → Attack surface reduction)
+    [ ] Aktifkan Cloud-delivered protection & Automatic sample submission
+    [ ] Konfigurasi alert notification:
+        Settings → Endpoints → Email notifications → Add notification rule
+        (kirim alert ke email admin untuk severity: Medium, High, Critical)
+    [ ] Review Secure Score di Defender portal — catat baseline score awal
+
+[ ] INTEGRASI MDE + INTUNE (CONDITIONAL ACCESS)
+    [ ] Defender portal → Settings → Endpoints → Advanced features
+        [ ] Aktifkan: Microsoft Intune connection → On
+    [ ] Intune → Tenant administration → Connectors → Microsoft Defender for Endpoint
+        [ ] Pastikan status: Enabled
+    [ ] Aktifkan Conditional Access policy Hari 2 (Require Compliant Device)
+
+=====================================================================
+HARI 5 — M365 SERVICES (EXCHANGE, SHAREPOINT, TEAMS)
+=====================================================================
+
+[ ] EXCHANGE ONLINE
+    [ ] Test email semua 10 akun (kirim/terima)
+    [ ] Setup shared mailbox jika diperlukan (misal: info@domain.com, cs@domain.com)
+    [ ] Konfigurasi email signature template (opsional)
+    [ ] Pastikan DKIM sudah aktif dan DMARC sudah terpasang
+
+[ ] SHAREPOINT ONLINE
+    [ ] Buat 1 SharePoint site utama (Team site untuk All-Staff)
+    [ ] Buat struktur folder sesuai departemen
+    [ ] Set permission: All-Staff sebagai member, Management sebagai owner
+    [ ] Upload file/dokumen awal klien jika ada
+
+[ ] MICROSOFT TEAMS
+    [ ] Buat team utama: [Nama Perusahaan] — General
+    [ ] Buat channel sesuai kebutuhan (misal: Umum, Management, Keuangan)
+    [ ] Invite semua 10 user ke team
+    [ ] Test meeting/call antar user
+
+[ ] ONEDRIVE
+    [ ] Pastikan OneDrive aktif untuk semua user (otomatis dengan lisensi Business Premium)
+    [ ] Known Folder Move (Desktop, Documents, Pictures) — deploy via Intune config profile (opsional, sangat disarankan untuk backup otomatis)
+
+=====================================================================
+HARI 6 — SECURITY BASELINE & TESTING MENYELURUH
+=====================================================================
+
+[ ] DEFENDER FOR OFFICE 365
+    [ ] Exchange admin center → Policies & rules → Threat policies
+        [ ] Aktifkan Anti-phishing policy (standard protection)
+        [ ] Aktifkan Safe Links policy
+        [ ] Aktifkan Safe Attachments policy
+        [ ] Aktifkan Anti-spam & Anti-malware policy
+
+[ ] MICROSOFT SECURE SCORE
+    [ ] Review Secure Score di: https://security.microsoft.com/securescore
+    [ ] Catat score awal sebagai baseline
+    [ ] Implementasikan rekomendasi "quick win" yang tersedia
+
+[ ] AUDIT LOG
+    [ ] M365 admin center → Compliance → Audit
+    [ ] Pastikan audit log retention aktif (default 90 hari, Business Premium bisa 180 hari)
+
+[ ] TESTING MENYELURUH
+    [ ] Test login semua 10 user dari browser (pastikan MFA muncul)
+    [ ] Test login dari device yang belum enrolled (pastikan di-block oleh CA policy)
+    [ ] Test kirim/terima email dari/ke external domain
+    [ ] Test akses SharePoint & Teams dari semua user
+    [ ] Test remote wipe simulation di Intune (gunakan device test, bukan device user)
+    [ ] Verifikasi semua device status Compliant di Intune
+    [ ] Verifikasi semua device Onboarded di MDE
+    [ ] Cek tidak ada alert aktif/mencurigakan di Defender portal
+
+[ ] DOKUMENTASI
+    [ ] Buat dokumen arsitektur ringkas (diagram tenant, user, device, policy)
+    [ ] Buat runbook: cara tambah user baru, reset MFA, tambah device
+    [ ] Buat daftar user & email final (untuk diserahkan ke klien)
+    [ ] Catat semua konfigurasi penting (CA policy, compliance policy, MDE settings)
+
+=====================================================================
+HARI 7 — TRAINING & HANDOVER
+=====================================================================
+
+[ ] SESI TRAINING ADMIN (2 JAM)
+    [ ] Cara tambah/hapus user di M365 admin center
+    [ ] Cara assign/cabut lisensi
+    [ ] Cara reset MFA user (jika user ganti HP)
+    [ ] Cara lihat & kelola device di Intune
+    [ ] Cara baca alert di MDE dashboard
+    [ ] Cara akses audit log
+    [ ] Cara hubungi support Microsoft (jika ada isu lisensi/teknis)
+
+[ ] SESI SOSIALISASI KARYAWAN (1 JAM)
+    [ ] Cara login pertama kali & ganti password
+    [ ] Setup Microsoft Authenticator di HP untuk MFA
+    [ ] Cara akses Outlook, Teams, SharePoint dari browser & app
+    [ ] Cara akses OneDrive & simpan file di cloud
+    [ ] Apa yang harus dilakukan jika device hilang (laporkan ke admin segera)
+
+[ ] HANDOVER
+    [ ] Serahkan dokumen teknis & runbook ke PIC klien
+    [ ] Serahkan daftar user & kredensial awal secara aman (bukan via WA grup)
+    [ ] Serahkan info break-glass account (simpan offline)
+    [ ] Transfer ownership Global Admin ke akun klien (cabut akses Dino)
+    [ ] Konfirmasi klien bisa login sebagai admin mandiri
+    [ ] Tawarkan paket maintenance bulanan
+
+[ ] CLOSING
+    [ ] Kirim invoice pelunasan 50% sisa pembayaran
+    [ ] Minta testimoni/review dari klien
+    [ ] Dokumentasikan proyek sebagai studi kasus (dengan izin klien)
+
+=====================================================================
+CATATAN PENTING
+- Jangan pernah kirim kredensial user via WA grup — gunakan japri atau dokumen terenkripsi
+- Simpan break-glass account credentials offline (bukan di cloud)
+- ASR rules: mulai dari mode Audit 1-2 minggu sebelum ganti ke Block,
+  supaya tidak ada false positive yang ganggu kerjaan karyawan
+- DMARC: mulai dari p=none (monitoring), setelah 2-4 minggu cek report,
+  baru naikkan ke p=quarantine atau p=reject
+- Selalu cabut akses admin Dino setelah proyek selesai & handover done
+=====================================================================
