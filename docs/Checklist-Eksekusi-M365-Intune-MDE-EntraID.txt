@@ -5,7 +5,6 @@ Konsultan: Dino A. Stephanus
 =====================================================================
 
 PERSIAPAN SEBELUM MULAI
-[ ] Terima DP 50% dari klien
 [ ] Konfirmasi domain perusahaan (sudah punya atau perlu beli)
 [ ] Minta akses DNS management domain klien
 [ ] Kumpulkan daftar 10 user: nama lengkap, jabatan, format email
