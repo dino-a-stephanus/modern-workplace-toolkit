@@ -180,6 +180,27 @@ $users = @(
 
 ---
 
+## 🗺️ Roadmap
+
+Current state and near-term plans for the toolkit.
+
+| Status | Item | Notes |
+|--------|------|-------|
+| ✅ Done | Core setup script | Tenant, users, groups, MFA, Intune enrollment |
+| ✅ Done | License assignment script | M365 Business Premium bulk assignment |
+| ✅ Done | Security baseline script | CA policies, Defender for O365, ASR, audit log |
+| ✅ Done | On-premise AD audit script | Hybrid/migration readiness checklist |
+| 🔨 In progress | Azure Provisioning module | Scripted subscription, resource group, and networking baseline setup |
+| 🔨 In progress | EntraID Hardening module | Extended Conditional Access, PIM, and identity protection policies beyond the default baseline |
+| 📋 Planned | SOW & consulting templates | Standardized statement-of-work and engagement templates under `templates/` |
+| 📋 Planned | Pester test coverage | Unit/integration tests for each script before execution against a live tenant |
+| 📋 Planned | CI validation | GitHub Actions running PSScriptAnalyzer + Pester on every push |
+| 📋 Planned | Config-driven deployment | Move `$config`/`$users` out of script headers into a separate JSON/YAML input file |
+| 💡 Exploring | Multi-cloud parity | AWS equivalent module (IAM, Organizations, GuardDuty) for hybrid Azure/AWS engagements |
+
+Have a feature request or want to contribute to one of these? Open an issue or PR.
+
+---
 ## 📄 License
 
 MIT License — free to use and modify for consulting project needs.
@@ -193,6 +214,5 @@ Cloud & Security Architect | Jakarta, Indonesia
 20+ years of experience in IT Infrastructure & Cybersecurity
 
 ---
-
 > This toolkit was built to speed up execution of Modern Workplace setup projects.
 > Always review the configuration before deploying to a production environment.
