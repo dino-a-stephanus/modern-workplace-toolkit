@@ -50,50 +50,7 @@ Suitable for greenfield projects (no prior infrastructure) at a scale of 10–10
 
 The toolkit provisions and secures four Microsoft 365 pillars in sequence — Identity, Collaboration, Device Management, and Endpoint Security — with an optional on-premise AD audit path for hybrid migration scenarios.
 
-```mermaid
-flowchart TB
-    subgraph Client["🏢 Client M365 Tenant (Greenfield)"]
-        direction TB
-
-        subgraph Identity["1️⃣ Identity — Azure Entra ID"]
-            A1[Domain Verification]
-            A2[User & Group Provisioning]
-            A3[MFA / Security Defaults]
-        end
-
-        subgraph Collab["2️⃣ Collaboration — Microsoft 365"]
-            B1[Exchange Online + DKIM]
-            B2[License Assignment<br/>Business Premium]
-        end
-
-        subgraph Device["3️⃣ Device Management — Intune"]
-            C1[Compliance Policies]
-            C2[Security Baseline Profiles]
-        end
-
-        subgraph Endpoint["4️⃣ Endpoint Security — Defender"]
-            D1[Conditional Access x5]
-            D2[Defender for O365<br/>Anti-phishing / Safe Links / Safe Attachments]
-            D3[ASR Rules + Audit Log]
-        end
-
-        Identity --> Collab --> Device --> Endpoint
-    end
-
-    subgraph OnPrem["☁️ Optional: Hybrid Path"]
-        E1[On-Premise AD Audit]
-    end
-
-    OnPrem -.-> Identity
-
-    style Identity fill:#0078D4,color:#fff
-    style Collab fill:#0078D4,color:#fff
-    style Device fill:#00A4EF,color:#fff
-    style Endpoint fill:#D13438,color:#fff
-    style OnPrem fill:#666,color:#fff
-```
-
-**Execution flow maps directly to the scripts below** — each stage is a standalone script that can be run independently, re-run safely, or paused between stages (e.g., waiting for license procurement before Step 2).
+![Modern Workplace deployment architecture](./assets/architecture.svg)
 
 ---
 
