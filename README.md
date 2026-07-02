@@ -18,20 +18,21 @@
 
 ## 🧭 Executive Summary
 
-Small and mid-sized organizations — banks, fintechs, and SMEs — often need enterprise-grade identity, device, and endpoint security in weeks, not months, and without a dedicated internal IT security team. **Modern Workplace Toolkit** is a PowerShell automation suite that stands up a secure, Microsoft-native "modern workplace" environment from a greenfield tenant, covering identity, collaboration, device management, and endpoint protection in a single, repeatable execution flow.
+Small and mid-sized organizations — banks, fintechs, and SMEs — often need enterprise-grade identity, device, and endpoint security in weeks, not months, and without a dedicated internal IT security team. **Modern Workplace Toolkit** is not a loose collection of scripts — it is a **framework**: a defined methodology, a staged architecture, and a set of design principles for standing up a secure, Microsoft-native "modern workplace" environment from a greenfield tenant. The scripts are the *implementation* of the framework, not the framework itself.
 
-Instead of manually clicking through the M365 Admin Center, Entra ID, Intune, and Defender portals, this toolkit codifies a consistent, auditable deployment process — reducing setup time, minimizing configuration drift, and ensuring every client engagement starts from the same security baseline.
+Instead of manually clicking through the M365 Admin Center, Entra ID, Intune, and Defender portals — or improvising a different sequence on every engagement — this framework codifies a consistent, auditable deployment methodology: the same four-stage architecture, the same security baseline, the same handover checklist, every time. That consistency is what scales a one-person consulting practice into something a client (or a future teammate) can trust and audit.
 
 **Who it's for:** IT consultants, MSPs, and internal IT teams deploying Microsoft 365 environments for organizations with 10–100 users.
 
-**What it delivers:**
-| Outcome | Detail |
+**What the framework provides:**
+| Layer | Detail |
 |---|---|
-| ⏱️ Faster deployment | Core tenant, users, and security groups provisioned via script instead of manual portal work |
+| 🧭 Methodology | A fixed four-stage deployment sequence (Identity → Collaboration → Device → Endpoint) that every engagement follows |
+| 🏗️ Architecture | A documented reference architecture (see below) that scripts, checklists, and future modules are built against |
+| 🧩 Design principles | Idempotent, staged, config-driven execution — see [Design Principles](#-design-principles) |
+| 🗺️ Roadmap | A versioned path from script bundle to a modular, tested, multi-cloud framework — see [Roadmap](#%EF%B8%8F-roadmap) |
 | 🔐 Security by default | MFA, Conditional Access, Defender for Office 365, and ASR rules enabled from day one |
 | 📋 Auditability | Every step is scripted and repeatable — no undocumented manual configuration |
-| 🧩 Scalable baseline | Suitable for greenfield SME/fintech tenants (10–100 users), extensible to hybrid AD environments |
-
 
 ---
 
