@@ -32,25 +32,37 @@ Instead of manually clicking through the M365 Admin Center, Entra ID, Intune, an
 | 📋 Auditability | Every step is scripted and repeatable — no undocumented manual configuration |
 | 🧩 Scalable baseline | Suitable for greenfield SME/fintech tenants (10–100 users), extensible to hybrid AD environments |
 
+
 ---
-## 📋 Description
 
-This repository contains PowerShell scripts and checklists for deploying a secure, end-to-end modern work environment, covering:
+## 🧩 Design Principles
 
-- ✅ Centralized identity management (Azure Entra ID)
-- ✅ Professional email & collaboration (Microsoft 365)
-- ✅ Device management (Microsoft Intune)
-- ✅ Endpoint protection (Microsoft Defender for Endpoint)
-- ✅ Security baseline & compliance
+Every script, checklist, and future module in this framework is built to the same set of rules. These principles — not any single script — are what make the framework portable across engagements and contributors.
 
-Suitable for greenfield projects (no prior infrastructure) at a scale of 10–100 users.
+| Principle | What it means in practice |
+|---|---|
+| **Staged, not monolithic** | Identity → Collaboration → Device → Endpoint is a fixed sequence. Each stage is a standalone script that can run, fail, and re-run independently without breaking the others. |
+| **Security by default, not by request** | MFA, Conditional Access, Defender policies, and audit logging are enabled in the baseline run — not left as a follow-up task. |
+| **Config separated from logic** | Client-specific values (`$config`, `$users`) live in a clearly marked block at the top of each script, never hardcoded in the execution logic. *(Roadmap: externalized to JSON/YAML — see below.)* |
+| **Idempotent where possible** | Scripts check current state before creating or modifying resources, so re-running a stage after a partial failure doesn't duplicate work. |
+| **Audit-first** | Every stage produces a visible artifact — a Secure Score snapshot, an audit log entry, a credentials export — so the deployment can be reviewed after the fact, not just trusted. |
+| **Handover-ready** | The framework assumes a consultant will leave. Break-glass accounts, credential handover, and admin-access revocation are part of the methodology, not an afterthought. |
+
+**Scope:** covers identity (Entra ID), collaboration (Microsoft 365), device management (Intune), and endpoint protection (Defender for Endpoint) for greenfield tenants at a scale of 10–100 users.
+
 ---
 
 ## 🏗️ Architecture
 
-The toolkit provisions and secures four Microsoft 365 pillars in sequence — Identity, Collaboration, Device Management, and Endpoint Security — with an optional on-premise AD audit path for hybrid migration scenarios.
+The framework's reference architecture defines four Microsoft 365 pillars, provisioned and secured in sequence — Identity, Collaboration, Device Management, and Endpoint Security — with an optional on-premise AD audit path for hybrid migration scenarios. Every script and future module is built against this architecture.
 
+<div align="center">
+    
 ![Modern Workplace deployment architecture](./assets/architecture.svg)
+
+</div>
+
+**Execution flow maps directly to the scripts below** — each stage is a standalone script that can be run independently, re-run safely, or paused between stages (e.g., waiting for license procurement before Step 2).
 
 ---
 
