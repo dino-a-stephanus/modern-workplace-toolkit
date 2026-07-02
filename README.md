@@ -2,9 +2,9 @@
 
 # 🛡️ Modern Workplace Toolkit
 
-### Microsoft 365 + Intune + MDE + Azure Entra ID — PowerShell Automation
+### A Framework for Secure Modern Workplace Deployment
 
-**Secure, repeatable Modern Workplace deployment for SMEs, fintechs, and mid-sized banks**
+**Methodology, architecture, and design principles for Microsoft 365 + Intune + MDE + Entra ID — not just a script bundle**
 
 [![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=flat&logo=powershell&logoColor=white)](https://learn.microsoft.com/powershell/)
 [![Microsoft Graph](https://img.shields.io/badge/Microsoft%20Graph-0078D4?style=flat&logo=microsoft&logoColor=white)](https://learn.microsoft.com/graph/)
