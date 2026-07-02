@@ -137,7 +137,9 @@ Install-Module ExchangeOnlineManagement  -Scope CurrentUser -Force
 
 ## 🔧 Configuration
 
-Before running each script, edit the `$config` section at the top of the file:
+Every script reads from two blocks at the top of the file — no config file, no hidden defaults. Edit these before each engagement, then run.
+
+### Tenant settings — `$config`
 
 ```powershell
 $config = @{
@@ -149,13 +151,33 @@ $config = @{
 }
 ```
 
-And the user list in the `$users` section:
+| Key | Description | Example |
+|---|---|---|
+| `Domain` | Client's verified domain in the M365 tenant | `companyname.com` |
+| `CompanyName` | Legal entity name, used in notifications and reports | `PT Company Name` |
+| `AdminEmail` | Recipient for setup and audit notifications | `admin@domain.com` |
+| `UsageLocation` | ISO 3166-1 alpha-2 country code, required for license assignment | `ID` |
+| `TempPassword` | Temporary password issued to new users at creation | *see note below* |
+
+> ⚠️ **`TempPassword` is a placeholder, not a production credential.** Generate a unique, random value per engagement — never reuse the sample value above. Rotate it out via `user-credentials.csv` handover (see [Important Notes](#%EF%B8%8F-important-notes)).
+
+### User list — `$users`
+
 ```powershell
 $users = @(
     @{ FirstName = "Budi"; LastName = "Santoso"; Username = "budi.santoso"; JobTitle = "CEO"; Department = "Management" },
     # ... add users as needed
 )
 ```
+
+| Key | Description |
+|---|---|
+| `FirstName` / `LastName` | Used to generate display name and mailbox |
+| `Username` | Becomes the UPN prefix, e.g. `budi.santoso@companyname.com` |
+| `JobTitle` | Populates the Entra ID profile field |
+| `Department` | Used for group assignment and reporting |
+
+> 💡 **Tip:** keep this list in source control per client (as a private branch or gitignored file), not in the shared framework repo — it's client PII once populated.
 
 ---
 
