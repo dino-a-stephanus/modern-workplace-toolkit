@@ -1,9 +1,38 @@
-# 🛡️ Modern Workplace Toolkit
-**Microsoft 365 + Intune + MDE + Azure Entra ID — PowerShell Automation**
-> Automation toolkit for deploying Microsoft-based Modern Workplace environments for SMEs, fintechs, and mid-sized banks.
-> Developed by **Dino A. Stephanus** — Cloud & Security Architect
----
+<div align="center">
 
+# 🛡️ Modern Workplace Toolkit
+
+### Microsoft 365 + Intune + MDE + Azure Entra ID — PowerShell Automation
+
+**Secure, repeatable Modern Workplace deployment for SMEs, fintechs, and mid-sized banks**
+
+[![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=flat&logo=powershell&logoColor=white)](https://learn.microsoft.com/powershell/)
+[![Microsoft Graph](https://img.shields.io/badge/Microsoft%20Graph-0078D4?style=flat&logo=microsoft&logoColor=white)](https://learn.microsoft.com/graph/)
+[![Intune](https://img.shields.io/badge/Microsoft%20Intune-00A4EF?style=flat&logo=microsoft&logoColor=white)](https://learn.microsoft.com/mem/intune/)
+[![Defender](https://img.shields.io/badge/Defender%20for%20Endpoint-red?style=flat&logo=microsoftdefender&logoColor=white)](https://learn.microsoft.com/microsoft-365/security/defender-endpoint/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#-license)
+
+*Developed by **Dino A. Stephanus** — Cloud & Security Architect | Jakarta, Indonesia*
+
+</div>
+
+## 🧭 Executive Summary
+
+Small and mid-sized organizations — banks, fintechs, and SMEs — often need enterprise-grade identity, device, and endpoint security in weeks, not months, and without a dedicated internal IT security team. **Modern Workplace Toolkit** is a PowerShell automation suite that stands up a secure, Microsoft-native "modern workplace" environment from a greenfield tenant, covering identity, collaboration, device management, and endpoint protection in a single, repeatable execution flow.
+
+Instead of manually clicking through the M365 Admin Center, Entra ID, Intune, and Defender portals, this toolkit codifies a consistent, auditable deployment process — reducing setup time, minimizing configuration drift, and ensuring every client engagement starts from the same security baseline.
+
+**Who it's for:** IT consultants, MSPs, and internal IT teams deploying Microsoft 365 environments for organizations with 10–100 users.
+
+**What it delivers:**
+| Outcome | Detail |
+|---|---|
+| ⏱️ Faster deployment | Core tenant, users, and security groups provisioned via script instead of manual portal work |
+| 🔐 Security by default | MFA, Conditional Access, Defender for Office 365, and ASR rules enabled from day one |
+| 📋 Auditability | Every step is scripted and repeatable — no undocumented manual configuration |
+| 🧩 Scalable baseline | Suitable for greenfield SME/fintech tenants (10–100 users), extensible to hybrid AD environments |
+
+---
 ## 📋 Description
 
 This repository contains PowerShell scripts and checklists for deploying a secure, end-to-end modern work environment, covering:
@@ -15,6 +44,56 @@ This repository contains PowerShell scripts and checklists for deploying a secur
 - ✅ Security baseline & compliance
 
 Suitable for greenfield projects (no prior infrastructure) at a scale of 10–100 users.
+---
+
+## 🏗️ Architecture
+
+The toolkit provisions and secures four Microsoft 365 pillars in sequence — Identity, Collaboration, Device Management, and Endpoint Security — with an optional on-premise AD audit path for hybrid migration scenarios.
+
+```mermaid
+flowchart TB
+    subgraph Client["🏢 Client M365 Tenant (Greenfield)"]
+        direction TB
+
+        subgraph Identity["1️⃣ Identity — Azure Entra ID"]
+            A1[Domain Verification]
+            A2[User & Group Provisioning]
+            A3[MFA / Security Defaults]
+        end
+
+        subgraph Collab["2️⃣ Collaboration — Microsoft 365"]
+            B1[Exchange Online + DKIM]
+            B2[License Assignment<br/>Business Premium]
+        end
+
+        subgraph Device["3️⃣ Device Management — Intune"]
+            C1[Compliance Policies]
+            C2[Security Baseline Profiles]
+        end
+
+        subgraph Endpoint["4️⃣ Endpoint Security — Defender"]
+            D1[Conditional Access x5]
+            D2[Defender for O365<br/>Anti-phishing / Safe Links / Safe Attachments]
+            D3[ASR Rules + Audit Log]
+        end
+
+        Identity --> Collab --> Device --> Endpoint
+    end
+
+    subgraph OnPrem["☁️ Optional: Hybrid Path"]
+        E1[On-Premise AD Audit]
+    end
+
+    OnPrem -.-> Identity
+
+    style Identity fill:#0078D4,color:#fff
+    style Collab fill:#0078D4,color:#fff
+    style Device fill:#00A4EF,color:#fff
+    style Endpoint fill:#D13438,color:#fff
+    style OnPrem fill:#666,color:#fff
+```
+
+**Execution flow maps directly to the scripts below** — each stage is a standalone script that can be run independently, re-run safely, or paused between stages (e.g., waiting for license procurement before Step 2).
 
 ---
 
